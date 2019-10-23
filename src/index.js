@@ -22,19 +22,29 @@ class App extends React.Component {
     //super(props) is required
     super(props);
     // This is the only direct assignment for state
-    this.state = { lat: null };
+    this.state = { lat: null, errMessage: "" };
 
     window.navigator.geolocation.getCurrentPosition(
       position => {
         this.setState({ lat: position.coords.latitude });
       },
-      err => console.log(err)
+      err => {
+        this.setState({ errMessage: err.message });
+      }
     );
   }
 
   //render function is required
   render() {
-    return <div>Latitude: {this.state.lat}</div>;
+    if (this.state.errMessage && !this.state.lat) {
+      return <div>Error: {this.state.errMessage}</div>;
+    }
+
+    if (!this.state.errMessage && this.state.lat) {
+      return <div>Latitude: {this.state.lat}</div>;
+    }
+
+    return <div>Loading!</div>;
   }
 }
 
